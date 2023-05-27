@@ -6,6 +6,8 @@ import { encrypt } from '../middleware/hash.js';
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~ LOGOWANIE ~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 export const login = (req, res) => {
+  console.log(req.body.PESEL);
+  console.log(req.body.password);
   const q = "SELECT id , password FROM bank.klienci WHERE PESEL = ?";
   db.query(q, [req.body.PESEL], (err, data) => {
     if (err) {
@@ -26,8 +28,7 @@ export const login = (req, res) => {
         return res.status(500).json(error);
       }
     })
-    const redirectPath = "/klient";
-
+    
     const { password, ...others } = data[0];
     res.status(200)
       .cookie("accessToken", token, {
@@ -35,7 +36,7 @@ export const login = (req, res) => {
         secure: true,
         sameSite: "none",
       })
-      .json({token: token, redirectPath: redirectPath, id: id });
+      .json({ token: token, id: id });
   });
 };
 

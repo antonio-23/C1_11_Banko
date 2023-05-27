@@ -173,42 +173,158 @@ const startLogOutTimer = function () {
 
 ///////////////////////////////////////
 // Event handlers
+// let currentAccount, timer;
+
+// btnLogin.addEventListener('click', function (e) {
+//   // Prevent form from submitting
+//   e.preventDefault();
+
+//   currentAccount = accounts.find((acc) => acc.username === inputLoginUsername.value);
+//   console.log(currentAccount);
+
+//   // if (currentAccount?.pin === +inputLoginPin.value) {
+//   //   // Display UI and message
+//   //   labelWelcome.textContent = `Witaj ponownie, ${currentAccount.owner.split(' ')[0]}`;
+//   //   containerApp.style.opacity = 100;
+
+//   //   // Create current date and time
+//   //   const now = new Date();
+//   //   const options = {
+//   //     hour: 'numeric',
+//   //     minute: 'numeric',
+//   //     day: 'numeric',
+//   //     month: 'numeric',
+//   //     year: 'numeric',
+//   //   };
+
+//   //   labelDate.textContent = new Intl.DateTimeFormat(currentAccount.locale, options).format(now);
+
+//   //   // Clear input fields
+//   //   inputLoginUsername.value = inputLoginPin.value = '';
+//   //   inputLoginPin.blur();
+
+//   //   // Timer
+//   //   if (timer) clearInterval(timer);
+//   //   timer = startLogOutTimer();
+
+//   //   // Update UI
+//   //   updateUI(currentAccount);
+//   // }
+    
+
+//     fetch('http://localhost:8080/klienci/login', {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json'
+//       },
+//       body: JSON.stringify({ PESEL: currentAccount.username, password: inputLoginPin.value })
+//     })
+//     .then(response => response.json())
+//     .then(data => {
+//       fetch('http://localhost:8080/middleware/authorize_k', {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json'
+//       },
+//       body: JSON.stringify({ PESEL: currentAccount.username, password: inputLoginPin.value })
+//     })
+//     .then(response => response.json())
+//     .then(data => {
+//       if (data.lenght)
+//       {
+//         containerApp.style.opacity = 100;
+//       }
+//     })
+//     .catch(error => {
+//       console.log(error);
+//     });
+//     })
+//     .catch(error => {
+//       console.log(error);
+//     });
+
+// });
+
 let currentAccount, timer;
 
 btnLogin.addEventListener('click', function (e) {
   // Prevent form from submitting
   e.preventDefault();
 
-  currentAccount = accounts.find((acc) => acc.username === inputLoginUsername.value);
-  console.log(currentAccount);
+  // Get the input values
+  const inputUsername = inputLoginUsername.value;
+  const inputPin = inputLoginPin.value;
+  console.log(inputUsername);
+  console.log(inputPin);
+  // Check if input values are not empty
+  if (inputUsername && inputPin) {
+    // Send request to backend to retrieve the current account
+    fetch('http://localhost:8080/api/klienci/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ PESEL: inputUsername, password: inputPin })
+    })
+    .then(response => response.json())
+    .then(data => {
+      // Check if current account is retrieved successfully
+      if (data && data.id) {
+        // Set the current account
+        currentAccount = data;
 
-  if (currentAccount?.pin === +inputLoginPin.value) {
-    // Display UI and message
-    labelWelcome.textContent = `Witaj ponownie, ${currentAccount.owner.split(' ')[0]}`;
-    containerApp.style.opacity = 100;
+        // Display UI and message
+        //labelWelcome.textContent = `Witaj ponownie, ${currentAccount.owner.split(' ')[0]}`;
+        containerApp.style.opacity = 100;
 
-    // Create current date and time
-    const now = new Date();
-    const options = {
-      hour: 'numeric',
-      minute: 'numeric',
-      day: 'numeric',
-      month: 'numeric',
-      year: 'numeric',
-    };
+        // Create current date and time
+        const now = new Date();
+        const options = {
+          hour: 'numeric',
+          minute: 'numeric',
+          day: 'numeric',
+          month: 'numeric',
+          year: 'numeric',
+        };
+        labelDate.textContent = new Intl.DateTimeFormat(currentAccount.locale, options).format(now);
 
-    labelDate.textContent = new Intl.DateTimeFormat(currentAccount.locale, options).format(now);
+        // Clear input fields
+        inputLoginUsername.value = inputLoginPin.value = '';
+        inputLoginPin.blur();
 
-    // Clear input fields
-    inputLoginUsername.value = inputLoginPin.value = '';
-    inputLoginPin.blur();
+        // Timer
+        if (timer) clearInterval(timer);
+        timer = startLogOutTimer();
 
-    // Timer
-    if (timer) clearInterval(timer);
-    timer = startLogOutTimer();
+        // Update UI
+        updateUI(currentAccount);
 
-    // Update UI
-    updateUI(currentAccount);
+        // Send additional requests if needed
+        fetch('http://localhost:8080/middleware/authorize_k', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ PESEL: currentAccount.username, password: inputPin })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.length) {
+            containerApp.style.opacity = 100;
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+      } else {
+        console.log('Error: Current account not found');
+      }
+    })
+    .catch(error => {
+      console.log(error);
+    });
+  } else {
+    console.log('Error: Username and/or pin not provided');
   }
 });
 

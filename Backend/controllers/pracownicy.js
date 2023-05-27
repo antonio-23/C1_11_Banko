@@ -26,7 +26,6 @@ export const login = (req, res) => {
           return res.status(500).json(error);
         }
       })
-      const redirectPath = "/pracownicy";
   
       const { password, ...others } = data[0];
       res.status(200)
@@ -35,7 +34,7 @@ export const login = (req, res) => {
           secure: true,
           sameSite: "none",
         })
-        .json({token: token, redirectPath: redirectPath, id: id });
+        .json({token: token, id: id });
     });
   };
   
