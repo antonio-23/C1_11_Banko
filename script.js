@@ -1,27 +1,5 @@
 'use strict';
 
-const account1 = {
-  owner: 'Robert Kubica',
-  movements: [200, 455.23, -306.5, 25000, -642.21, -133.9, 79.97, 1300],
-  interestRate: 1.2, // %
-  pin: 1111,
-
-  movementsDates: [
-    '2019-11-18T21:31:17.178Z',
-    '2019-12-23T07:42:02.383Z',
-    '2020-01-28T09:15:04.904Z',
-    '2020-04-01T10:17:24.185Z',
-    '2020-05-08T14:11:59.604Z',
-    '2020-07-26T17:01:17.194Z',
-    '2020-07-28T23:36:17.929Z',
-    '2020-08-01T10:51:36.790Z',
-  ],
-  currency: 'PLN',
-  locale: 'pt-PT', // de-DE
-};
-
-const accounts = [account1];
-
 /////////////////////////////////////////////////
 // Elements
 const labelWelcome = document.querySelector('.welcome');
@@ -70,31 +48,6 @@ const formatCur = function (value, locale, currency) {
     style: 'currency',
     currency: currency,
   }).format(value);
-};
-
-const displayMovements = function (acc, sort = false) {
-  containerMovements.innerHTML = '';
-
-  const movs = sort ? acc.movements.slice().sort((a, b) => a - b) : acc.movements;
-
-  movs.forEach(function (mov, i) {
-    const type = mov > 0 ? 'wpłata' : 'wypłata';
-
-    const date = new Date(acc.movementsDates[i]);
-    const displayDate = formatMovementDate(date, acc.locale);
-
-    const formattedMov = formatCur(mov, acc.locale, acc.currency);
-
-    const html = `
-      <div class="movements__row">
-        <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
-        <div class="movements__date">${displayDate}</div>
-        <div class="movements__value">${formattedMov}</div>
-      </div>
-    `;
-
-    containerMovements.insertAdjacentHTML('afterbegin', html);
-  });
 };
 
 const calcDisplayBalance = function (acc) {
@@ -171,80 +124,6 @@ const startLogOutTimer = function () {
   return timer;
 };
 
-///////////////////////////////////////
-// Event handlers
-// let currentAccount, timer;
-
-// btnLogin.addEventListener('click', function (e) {
-//   // Prevent form from submitting
-//   e.preventDefault();
-
-//   currentAccount = accounts.find((acc) => acc.username === inputLoginUsername.value);
-//   console.log(currentAccount);
-
-//   // if (currentAccount?.pin === +inputLoginPin.value) {
-//   //   // Display UI and message
-//   //   labelWelcome.textContent = `Witaj ponownie, ${currentAccount.owner.split(' ')[0]}`;
-//   //   containerApp.style.opacity = 100;
-
-//   //   // Create current date and time
-//   //   const now = new Date();
-//   //   const options = {
-//   //     hour: 'numeric',
-//   //     minute: 'numeric',
-//   //     day: 'numeric',
-//   //     month: 'numeric',
-//   //     year: 'numeric',
-//   //   };
-
-//   //   labelDate.textContent = new Intl.DateTimeFormat(currentAccount.locale, options).format(now);
-
-//   //   // Clear input fields
-//   //   inputLoginUsername.value = inputLoginPin.value = '';
-//   //   inputLoginPin.blur();
-
-//   //   // Timer
-//   //   if (timer) clearInterval(timer);
-//   //   timer = startLogOutTimer();
-
-//   //   // Update UI
-//   //   updateUI(currentAccount);
-//   // }
-    
-
-//     fetch('http://localhost:8080/klienci/login', {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json'
-//       },
-//       body: JSON.stringify({ PESEL: currentAccount.username, password: inputLoginPin.value })
-//     })
-//     .then(response => response.json())
-//     .then(data => {
-//       fetch('http://localhost:8080/middleware/authorize_k', {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json'
-//       },
-//       body: JSON.stringify({ PESEL: currentAccount.username, password: inputLoginPin.value })
-//     })
-//     .then(response => response.json())
-//     .then(data => {
-//       if (data.lenght)
-//       {
-//         containerApp.style.opacity = 100;
-//       }
-//     })
-//     .catch(error => {
-//       console.log(error);
-//     });
-//     })
-//     .catch(error => {
-//       console.log(error);
-//     });
-
-// });
-
 let currentAccount, timer;
 
 btnLogin.addEventListener('click', function (e) {
@@ -262,136 +141,70 @@ btnLogin.addEventListener('click', function (e) {
     fetch('http://localhost:8080/api/klienci/login', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ PESEL: inputUsername, password: inputPin })
+      body: JSON.stringify({ PESEL: inputUsername, password: inputPin }),
     })
-    .then(response => response.json())
-    .then(data => {
-      // Check if current account is retrieved successfully
-      if (data && data.id) {
-        // Set the current account
-        currentAccount = data;
+      .then((response) => response.json())
+      .then((data) => {
+        // Check if current account is retrieved successfully
+        if (data && data.id) {
+          // Set the current account
+          currentAccount = data;
 
-        // Display UI and message
-        //labelWelcome.textContent = `Witaj ponownie, ${currentAccount.owner.split(' ')[0]}`;
-        containerApp.style.opacity = 100;
+          // Display UI and message
+          //labelWelcome.textContent = `Witaj ponownie, ${currentAccount.owner.split(' ')[0]}`;
+          containerApp.style.opacity = 100;
 
-        // Create current date and time
-        const now = new Date();
-        const options = {
-          hour: 'numeric',
-          minute: 'numeric',
-          day: 'numeric',
-          month: 'numeric',
-          year: 'numeric',
-        };
-        labelDate.textContent = new Intl.DateTimeFormat(currentAccount.locale, options).format(now);
+          // Create current date and time
+          const now = new Date();
+          const options = {
+            hour: 'numeric',
+            minute: 'numeric',
+            day: 'numeric',
+            month: 'numeric',
+            year: 'numeric',
+          };
+          labelDate.textContent = new Intl.DateTimeFormat(currentAccount.locale, options).format(now);
 
-        // Clear input fields
-        inputLoginUsername.value = inputLoginPin.value = '';
-        inputLoginPin.blur();
+          // Clear input fields
+          inputLoginUsername.value = inputLoginPin.value = '';
+          inputLoginPin.blur();
 
-        // Timer
-        if (timer) clearInterval(timer);
-        timer = startLogOutTimer();
+          // Timer
+          if (timer) clearInterval(timer);
+          timer = startLogOutTimer();
 
-        // Update UI
-        updateUI(currentAccount);
+          // Update UI
+          updateUI(currentAccount);
 
-        // Send additional requests if needed
-        fetch('http://localhost:8080/middleware/authorize_k', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ PESEL: currentAccount.username, password: inputPin })
-        })
-        .then(response => response.json())
-        .then(data => {
-          if (data.length) {
-            containerApp.style.opacity = 100;
-          }
-        })
-        .catch(error => {
-          console.log(error);
-        });
-      } else {
-        console.log('Error: Current account not found');
-      }
-    })
-    .catch(error => {
-      console.log(error);
-    });
+          // Send additional requests if needed
+          fetch('http://localhost:8080/middleware/authorize_k', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ PESEL: currentAccount.username, password: inputPin }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.length) {
+                containerApp.style.opacity = 100;
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } else {
+          console.log('Error: Current account not found');
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   } else {
     console.log('Error: Username and/or pin not provided');
   }
-});
-
-btnTransfer.addEventListener('click', function (e) {
-  e.preventDefault();
-  const amount = +inputTransferAmount.value;
-  const receiverAcc = accounts.find((acc) => acc.username === inputTransferTo.value);
-  inputTransferAmount.value = inputTransferTo.value = '';
-
-  if (amount > 0 && receiverAcc && currentAccount.balance >= amount && receiverAcc?.username !== currentAccount.username) {
-    // Doing the transfer
-    currentAccount.movements.push(-amount);
-    receiverAcc.movements.push(amount);
-
-    // Add transfer date
-    currentAccount.movementsDates.push(new Date().toISOString());
-    receiverAcc.movementsDates.push(new Date().toISOString());
-
-    // Update UI
-    updateUI(currentAccount);
-
-    // Reset timer
-    clearInterval(timer);
-    timer = startLogOutTimer();
-  }
-});
-
-btnLoan.addEventListener('click', function (e) {
-  e.preventDefault();
-
-  const amount = Math.floor(inputLoanAmount.value);
-
-  if (amount > 0 && currentAccount.movements.some((mov) => mov >= amount * 0.1)) {
-    setTimeout(function () {
-      // Add movement
-      currentAccount.movements.push(amount);
-
-      // Add loan date
-      currentAccount.movementsDates.push(new Date().toISOString());
-
-      // Update UI
-      updateUI(currentAccount);
-
-      // Reset timer
-      clearInterval(timer);
-      timer = startLogOutTimer();
-    }, 2500);
-  }
-  inputLoanAmount.value = '';
-});
-
-btnClose.addEventListener('click', function (e) {
-  e.preventDefault();
-
-  if (inputCloseUsername.value === currentAccount.username && +inputClosePin.value === currentAccount.pin) {
-    const index = accounts.findIndex((acc) => acc.username === currentAccount.username);
-    console.log(index);
-    // .indexOf(23)
-
-    // Delete account
-    accounts.splice(index, 1);
-
-    // Hide UI
-    containerApp.style.opacity = 0;
-  }
-
-  inputCloseUsername.value = inputClosePin.value = '';
 });
 
 let sorted = false;

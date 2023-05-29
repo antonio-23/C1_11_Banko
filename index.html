@@ -17,7 +17,7 @@
       <p class="welcome">Zaloguj się aby rozpocząć</p>
       <img src="logo.png" alt="Logo" class="logo" />
       <form class="login">
-        <input type="text" placeholder="Login" class="login__input login__input--user" />
+        <input type="text" placeholder="Login" maxlength="11" class="login__input login__input--user" />
         <input type="password" placeholder="Hasło" class="login__input login__input--pin" />
         <button class="login__btn">&rarr;</button>
       </form>
@@ -50,34 +50,10 @@
       <!-- SUMMARY -->
       <div class="summary">
         <p class="summary__label">Wpłaty</p>
-        <p class="summary__value summary__value--in">0000PLN</p>
+        <p class="summary__value summary__value--in">4000PLN</p>
         <p class="summary__label">Wypłaty</p>
-        <p class="summary__value summary__value--out">0000PLN</p>
-        <p class="summary__label">Odsetki</p>
-        <p class="summary__value summary__value--interest">0000PLN</p>
+        <p class="summary__value summary__value--out">378PLN</p>
         <button class="btn--sort">&downarrow; SORT</button>
-      </div>
-
-      <!-- OPERATION: TRANSFERS -->
-      <div class="operation operation--transfer">
-        <h2>Przelewy</h2>
-        <form class="form form--transfer">
-          <input type="text" class="form__input form__input--to" />
-          <input type="number" class="form__input form__input--amount" />
-          <button class="form__btn form__btn--transfer">&rarr;</button>
-          <label class="form__label">Przelew do</label>
-          <label class="form__label">Kwota</label>
-        </form>
-      </div>
-
-      <!-- OPERATION: LOAN -->
-      <div class="operation operation--loan">
-        <h2>Pożyczka</h2>
-        <form class="form form--loan">
-          <input type="number" class="form__input form__input--loan-amount" />
-          <button class="form__btn form__btn--loan">&rarr;</button>
-          <label class="form__label form__label--loan">Kwota</label>
-        </form>
       </div>
 
       <!-- OPERATION: LOGOUT -->
