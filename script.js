@@ -1,6 +1,5 @@
 'use strict';
 
-/////////////////////////////////////////////////
 // Elements
 const labelWelcome = document.querySelector('.welcome');
 const labelDate = document.querySelector('.date');
@@ -72,17 +71,6 @@ const calcDisplaySummary = function (acc) {
     .reduce((acc, int) => acc + int, 0);
   labelSumInterest.textContent = formatCur(interest, acc.locale, acc.currency);
 };
-
-const createUsernames = function (accs) {
-  accs.forEach(function (acc) {
-    acc.username = acc.owner
-      .toLowerCase()
-      .split(' ')
-      .map((name) => name[0])
-      .join('');
-  });
-};
-createUsernames(accounts);
 
 const updateUI = function (acc) {
   // Display movements
